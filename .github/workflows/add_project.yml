@@ -3,30 +3,41 @@ on:
   issues:
     types:
       - opened
-
 jobs:
-  addProjectToIssue:
+  add-to-project:
+    name: Add issue to project
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-
-      - name: Add project to issue
-        uses: actions/github-script@v4
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/add-to-project@RELEASE_VERSION
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            const issueNumber = context.issue.number;
-            const projectId = 'https://github.com/users/murphynd/projects/2'; 
+          # You can target a project in a different organization
+          # to the issue
+          project-url: https://github.com/users/murphynd/projects/2
+          github-token: ${{ secrets.ADD_TO_PROJECT_PAT }}
+          label-operator: OR
+# jobs:
+#   addProjectToIssue:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Checkout repository
+#         uses: actions/checkout@v2
+
+#       - name: Add project to issue
+#         uses: actions/github-script@v4
+#         env:
+#           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#         with:
+#           github-token: ${{ secrets.GITHUB_TOKEN }}
+#           script: |
+#             const issueNumber = context.issue.number;
+#             const projectId = 'https://github.com/users/murphynd/projects/2'; 
             
-            const octokit = github.getOctokit(process.env.GITHUB_TOKEN);
-            const { data: projects } = await octokit.projects.listForRepo({ owner: context.repo.owner, repo: context.repo.repo });
-            const project = projects.find((proj) => proj.id === projectId);
-            if (project) {
-              await octokit.projects.createCard({ column_id: project.column_id, content_id: context.issue.id, content_type: 'Issue' });
-              console.log(`Added issue ${issueNumber} to project ${project.name}`);
-            } else {
-              console.log(`Project with ID ${projectId} not found.`);
-            }
+#             const octokit = github.getOctokit(process.env.GITHUB_TOKEN);
+#             const { data: projects } = await octokit.projects.listForRepo({ owner: context.repo.owner, repo: context.repo.repo });
+#             const project = projects.find((proj) => proj.id === projectId);
+#             if (project) {
+#               await octokit.projects.createCard({ column_id: project.column_id, content_id: context.issue.id, content_type: 'Issue' });
+#               console.log(`Added issue ${issueNumber} to project ${project.name}`);
+#             } else {
+#               console.log(`Project with ID ${projectId} not found.`);
+#             }
