@@ -13,4 +13,3 @@ jobs:
           project-url: https://github.com/users/murphynd/projects/2
           github-token: ${{ secrets.ADD_TO_PROJECT_PAT }}
           label-operator: OR
-
